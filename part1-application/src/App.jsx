@@ -1,22 +1,19 @@
-const Hello = (props) => {
-  console.log(props);
-  return (
-    <>
-      <p>
-        Hello world! This is {props.name} and I am {props.age}
-      </p>
-    </>
-  );
-};
+import { useState } from "react";
+
+const Display = ({ counter }) => <div>{counter}</div>;
+
+const Button = ({ onClick, text }) => <button onClick={onClick}>{text}</button>;
 
 const App = () => {
-  const now = new Date();
+  const [counter, setCounter] = useState(0);
+
   return (
-    <>
-      <h1>Greetings!</h1>
-      <Hello name="Ya boi" age="20" />
-      <Hello name="Ya boiiiiiiiiiii" />
-    </>
+    <div style={{ textAlign: "center" }}>
+      <Display counter={counter} />
+      <Button onClick={() => setCounter(counter + 1)} text={"ADD"} />
+      <Button onClick={() => setCounter(0)} text={"RESET"} />
+      <Button onClick={() => setCounter(counter - 1)} text={"SUB"} />
+    </div>
   );
 };
 
