@@ -1,3 +1,4 @@
+import personService from "../services/person";
 const PersonForm = ({
   persons,
   setPersons,
@@ -12,20 +13,39 @@ const PersonForm = ({
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          if (
-            persons.some(
-              (person) => person.name === newName || person.number === newNumber
-            )
-          ) {
-            alert(`name or number is already added to phonebook`);
+          if (persons.some((person) => person.name === newName)) {
+            if (
+              window.confirm(
+                `${newName} is already added to phonebook. replace the old number with a new one?`
+              )
+            ) {
+              const person = persons.find((person) => person.name === newName);
+              personService
+                .update(person.id, { ...person, number: newNumber })
+                .then((returnedPerson) => {
+                  // console.log(returnedPerson);
+                  setPersons(
+                    persons.map((person) =>
+                      person.id !== returnedPerson.id ? person : returnedPerson
+                    )
+                  );
+                  setNewName("");
+                  setNewNumber("");
+                });
+            }
             return;
           }
-          setPersons([
-            ...persons,
-            { name: newName, number: newNumber, id: persons.length + 1 },
-          ]);
-          setNewName("");
-          setNewNumber("");
+          personService
+            .create({
+              name: newName,
+              number: newNumber,
+              id: String(persons.length + 1),
+            })
+            .then((returnedPerson) => {
+              setPersons(persons.concat(returnedPerson));
+              setNewName("");
+              setNewNumber("");
+            });
         }}
       >
         <div>
@@ -33,6 +53,7 @@ const PersonForm = ({
           <input
             type="text"
             value={newName}
+            required
             onChange={(e) => {
               setNewName(e.target.value);
             }}
@@ -42,6 +63,7 @@ const PersonForm = ({
             <input
               type="text"
               value={newNumber}
+              required
               onChange={(e) => {
                 setNewNumber(e.target.value);
               }}

@@ -1,10 +1,24 @@
-const Numbers = ({ persons, filter }) => {
+import personService from "../services/person";
+
+const Numbers = ({ persons, setPersons, filter }) => {
+  const deletePerson = (id) => {
+    if (
+      window.confirm(
+        `Delete ${persons.find((person) => person.id === id).name}?`
+      )
+    ) {
+      personService.deletePerson(id).then((res) => {
+        setPersons(persons.filter((person) => person.id !== id));
+      });
+    }
+  };
   return (
     <>
       {filter === ""
         ? persons.map((person) => (
             <div key={person.name}>
-              {person.id}- {person.name} ({person.number})
+              {person.name} ({person.number}){" "}
+              <button onClick={() => deletePerson(person.id)}>DELETE</button>
             </div>
           ))
         : persons
@@ -13,7 +27,8 @@ const Numbers = ({ persons, filter }) => {
             )
             .map((person) => (
               <div key={person.name}>
-                {person.id}- {person.name} ({person.number})
+                {person.name} ({person.number}){" "}
+                <button onClick={() => deletePerson(person.id)}>DELETE</button>
               </div>
             ))}
     </>
