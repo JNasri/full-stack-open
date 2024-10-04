@@ -6,6 +6,9 @@ const PersonForm = ({
   setNewName,
   newNumber,
   setNewNumber,
+  setMessage,
+  setMsgStyle,
+  setStyleToggle,
 }) => {
   return (
     <>
@@ -31,6 +34,15 @@ const PersonForm = ({
                   );
                   setNewName("");
                   setNewNumber("");
+                })
+                .catch(() => {
+                  setStyleToggle(false);
+                  setMessage(
+                    `Information of ${person.name} has already been removed from server.`
+                  );
+                  setTimeout(() => {
+                    setMessage(null);
+                  }, 5000);
                 });
             }
             return;
@@ -45,6 +57,11 @@ const PersonForm = ({
               setPersons(persons.concat(returnedPerson));
               setNewName("");
               setNewNumber("");
+              setStyleToggle(true);
+              setMessage(`Added ${returnedPerson.name} successfully!`);
+              setTimeout(() => {
+                setMessage(null);
+              }, 5000);
             });
         }}
       >
